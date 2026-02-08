@@ -22,8 +22,10 @@ export async function POST(request: Request) {
             );
         }
 
+        console.log('Starting recipe generation with ingredients:', ingredients);
+
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
         const prompt = `Genera una receta usando estos ingredientes: ${ingredients.join(', ')}.
 Preferencias dietéticas: ${preferences || 'ninguna'}.
@@ -43,6 +45,7 @@ Asegúrate de incluir todos los ingredientes proporcionados en la lista de ingre
 
         const result = await model.generateContent(prompt);
         const text = result.response.text();
+        console.log('AI Response received');
 
         // Extract JSON from response (Gemini sometimes adds markdown formatting)
         const jsonMatch = text.match(/\{[\s\S]*\}/);
