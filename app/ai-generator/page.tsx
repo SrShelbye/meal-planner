@@ -61,6 +61,7 @@ export default function AIGeneratorPage() {
         setGeneratedRecipe(null);
 
         try {
+            console.log('Iniciando petición a /api/ai/generate-recipe...');
             const response = await fetch('/api/ai/generate-recipe', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -70,15 +71,26 @@ export default function AIGeneratorPage() {
                 })
             });
 
-            const data = await response.json();
+            console.log('Estado de la respuesta:', response.status);
+
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonErr) {
+                console.error('La respuesta no es un JSON válido:', jsonErr);
+                throw new Error(`Error del servidor (Status ${response.status}). Por favor revisa los logs de Vercel.`);
+            }
 
             if (!response.ok) {
+                console.error('Respuesta API fallida:', data);
                 const errorMessage = data.details || data.error || 'Error al generar receta';
                 throw new Error(errorMessage);
             }
 
+            console.log('Receta generada con éxito');
             setGeneratedRecipe(data.recipe);
         } catch (err) {
+            console.error('Error capturado en frontend:', err);
             setError(err instanceof Error ? err.message : 'Error al generar receta');
         } finally {
             setLoading(false);
