@@ -60,8 +60,9 @@ Asegúrate de incluir todos los ingredientes proporcionados en la lista de ingre
         return NextResponse.json({ recipe });
     } catch (error) {
         console.error('Error generating recipe:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
         return NextResponse.json(
-            { error: 'Error al generar receta' },
+            { error: 'Error al generar receta', details: errorMessage },
             { status: 500 }
         );
     }
