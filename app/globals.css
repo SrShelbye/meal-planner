@@ -1,6 +1,4 @@
-@import "@tailwind base";
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   --font-sans: var(--font-geist-sans);
@@ -23,6 +21,7 @@
     0% {
       transform: translateX(-100%);
     }
+
     100% {
       transform: translateX(200%);
     }
