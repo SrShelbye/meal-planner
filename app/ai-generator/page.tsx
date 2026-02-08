@@ -73,7 +73,8 @@ export default function AIGeneratorPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || 'Error al generar receta');
+                const errorMessage = data.details || data.error || 'Error al generar receta';
+                throw new Error(errorMessage);
             }
 
             setGeneratedRecipe(data.recipe);
