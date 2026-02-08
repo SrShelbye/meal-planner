@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Calendar, ShoppingCart, BookOpen, Sparkles, Moon, Sun } from 'lucide-react';
+import { Home, Calendar, ShoppingCart, BookOpen, Sparkles, Moon, Sun, LogIn, LogOut, User as UserIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { useTheme } from '@/lib/theme-context';
+import { useAuth } from '@/lib/auth-context';
 
 const navigation = [
     { name: 'Inicio', href: '/', icon: Home },
@@ -17,15 +19,16 @@ const navigation = [
 export function Navigation() {
     const pathname = usePathname();
     const { theme, toggleTheme } = useTheme();
+    const { user, signOut } = useAuth();
 
     return (
-        <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+        <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 relative z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex">
                         <div className="flex-shrink-0 flex items-center">
-                            <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-                                🍽️ Meal Planner
+                            <span className="text-xl sm:text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                                🍽️ <span className="hidden xs:inline">Meal Planner</span>
                             </span>
                         </div>
                     </div>
@@ -48,17 +51,66 @@ export function Navigation() {
                                 </Link>
                             );
                         })}
+
+                        <div className="flex items-center gap-4 ml-4 border-l pl-4 dark:border-gray-700">
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                aria-label="Toggle dark mode"
+                            >
+                                {theme === 'dark' ? (
+                                    <Sun className="w-5 h-5" />
+                                ) : (
+                                    <Moon className="w-5 h-5" />
+                                )}
+                            </button>
+
+                            {user ? (
+                                <div className="flex items-center gap-3">
+                                    <div className="hidden lg:flex flex-col items-end">
+                                        <p className="text-xs font-medium text-gray-900 dark:text-white truncate max-w-[150px]">
+                                            {user.user_metadata.full_name || user.email}
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => signOut()}
+                                        className="p-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                        title="Cerrar sesión"
+                                    >
+                                        <LogOut className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            ) : (
+                                <Link href="/login">
+                                    <Button size="sm" variant="outline">
+                                        <LogIn className="w-4 h-4 mr-2" />
+                                        Entrar
+                                    </Button>
+                                </Link>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Mobile menu right side */}
+                    <div className="flex sm:hidden items-center gap-2">
                         <button
                             onClick={toggleTheme}
-                            className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                            aria-label="Toggle dark mode"
+                            className="p-2 rounded-lg text-gray-500 dark:text-gray-400"
                         >
-                            {theme === 'dark' ? (
-                                <Sun className="w-5 h-5" />
-                            ) : (
-                                <Moon className="w-5 h-5" />
-                            )}
+                            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                         </button>
+                        {user ? (
+                            <button
+                                onClick={() => signOut()}
+                                className="p-2 text-red-500"
+                            >
+                                <LogOut className="w-5 h-5" />
+                            </button>
+                        ) : (
+                            <Link href="/login" className="text-indigo-600 dark:text-indigo-400 p-2">
+                                <LogIn className="w-5 h-5" />
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>
@@ -73,11 +125,11 @@ export function Navigation() {
                                 key={item.name}
                                 href={item.href}
                                 className={cn(
-                                    'flex flex-col items-center justify-center py-2 text-xs font-medium transition-colors',
+                                    'flex flex-col items-center justify-center py-2 text-[10px] font-medium transition-colors',
                                     isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400'
                                 )}
                             >
-                                <item.icon className="w-6 h-6 mb-1" />
+                                <item.icon className="w-5 h-5 mb-1" />
                                 <span>{item.name}</span>
                             </Link>
                         );
