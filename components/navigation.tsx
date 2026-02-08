@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/lib/theme-context';
 import { useAuth } from '@/lib/auth-context';
+import { NotificationBell } from '@/components/notification-bell';
 
 const navigation = [
     { name: 'Inicio', href: '/', icon: Home },
@@ -40,19 +41,21 @@ export function Navigation() {
                                     key={item.name}
                                     href={item.href}
                                     className={cn(
-                                        'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors',
+                                        'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
                                         isActive
                                             ? 'border-indigo-500 text-gray-900 dark:text-white'
                                             : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
                                     )}
+                                    aria-current={isActive ? 'page' : undefined}
                                 >
-                                    <item.icon className="w-4 h-4 mr-2" />
+                                    <item.icon className="w-4 h-4 mr-2" aria-hidden="true" />
                                     {item.name}
                                 </Link>
                             );
                         })}
 
                         <div className="flex items-center gap-4 ml-4 border-l pl-4 dark:border-gray-700">
+                            <NotificationBell />
                             <button
                                 onClick={toggleTheme}
                                 className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -125,11 +128,12 @@ export function Navigation() {
                                 key={item.name}
                                 href={item.href}
                                 className={cn(
-                                    'flex flex-col items-center justify-center py-2 text-[10px] font-medium transition-colors',
+                                    'flex flex-col items-center justify-center py-2 text-[10px] font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-inset',
                                     isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400'
                                 )}
+                                aria-current={isActive ? 'page' : undefined}
                             >
-                                <item.icon className="w-5 h-5 mb-1" />
+                                <item.icon className="w-5 h-5 mb-1" aria-hidden="true" />
                                 <span>{item.name}</span>
                             </Link>
                         );

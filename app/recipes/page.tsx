@@ -5,8 +5,10 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase/client';
 import { Navigation } from '@/components/navigation';
 import { Button } from '@/components/ui/button';
-import { RecipeCard, RecipeCardSkeleton } from '@/components/recipes/recipe-card';
+import { RecipeCard } from '@/components/recipes/recipe-card';
+import { RecipeCardSkeleton } from '@/components/ui/skeleton';
 import { RecipeForm } from '@/components/recipes/recipe-form';
+import { ImportExportManager } from '@/components/import-export-manager';
 import { RecipeWithIngredients } from '@/lib/types/database';
 import { Plus, Search, X, Edit, Trash2 } from 'lucide-react';
 
@@ -98,6 +100,9 @@ export default function RecipesPage() {
                             />
                         </div>
                     </div>
+
+                    {/* Import/Export Section */}
+                    <ImportExportManager />
 
                     {/* Recipe Grid */}
                     {isLoading ? (

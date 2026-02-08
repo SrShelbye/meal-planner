@@ -1,9 +1,11 @@
 'use client';
 
+import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase/client';
 import { RecipeWithIngredients } from '@/lib/types/database';
 import { Clock, ChefHat } from 'lucide-react';
+import { ScaleOnHover } from '@/components/ui/animations';
 
 interface RecipeCardProps {
     recipe: RecipeWithIngredients;
@@ -12,16 +14,29 @@ interface RecipeCardProps {
 
 export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
     return (
-        <div
-            onClick={onClick}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all cursor-pointer overflow-hidden group"
-        >
+        <ScaleOnHover scale={1.03}>
+            <div
+                onClick={onClick}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all cursor-pointer overflow-hidden group"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onClick?.();
+                    }
+                }}
+                aria-label={`Ver receta: ${recipe.title}`}
+            >
             {recipe.image_url ? (
-                <div className="h-48 overflow-hidden bg-gray-200 dark:bg-gray-700">
-                    <img
+                <div className="h-48 overflow-hidden bg-gray-200 dark:bg-gray-700 relative">
+                    <Image
                         src={recipe.image_url}
                         alt={recipe.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        priority={false}
                     />
                 </div>
             ) : (
@@ -44,7 +59,7 @@ export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
                 <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                     {recipe.prep_time && (
                         <div className="flex items-center">
-                            <Clock className="w-4 h-4 mr-1" />
+                            <Clock className="w-4 h-4 mr-1" aria-hidden="true" />
                             <span>{recipe.prep_time} min</span>
                         </div>
                     )}
@@ -57,18 +72,7 @@ export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
                 </div>
             </div>
         </div>
+    </ScaleOnHover>
     );
 }
 
-export function RecipeCardSkeleton() {
-    return (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden animate-pulse">
-            <div className="h-48 bg-gray-200 dark:bg-gray-700" />
-            <div className="p-4 space-y-3">
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
-            </div>
-        </div>
-    );
-}
